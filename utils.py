@@ -16,7 +16,7 @@ import tensorflow as tf
 import skimage.color
 import imageio
 import skimage.transform
-from scipy import ndimage
+import scipy.ndimage
 
 ############################################################
 #  Bounding Boxes
@@ -417,7 +417,7 @@ def resize_mask(mask, scale, padding):
             [(top, bottom), (left, right), (0, 0)]
     """
     h, w = mask.shape[:2]
-    mask = ndimage.zoom(mask, zoom=[scale, scale, 1], order=0)
+    mask = scipy.ndimage.zoom(mask, zoom=[scale, scale, 1], order=0)
     mask = np.pad(mask, padding, mode='constant', constant_values=0)
     return mask
 
