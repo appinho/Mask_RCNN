@@ -471,7 +471,7 @@ def unmold_mask(mask, bbox, image_shape):
     Returns a binary mask with the same size as the original image.
     """
     threshold = 0.5
-    y1, x1, y2, x2 = bbox
+    x1, y1, x2, y2 = bbox
     mask = np.array(Image.fromarray(mask).resize(
             (y2 - y1, x2 - x1), resample=Image.BILINEAR)).astype(np.float32) / 255.0
     mask = np.where(mask >= threshold, 1, 0).astype(np.uint8)
