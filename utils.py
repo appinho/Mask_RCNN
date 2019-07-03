@@ -427,12 +427,12 @@ def minimize_mask(bbox, mask, mini_shape):
 
     See inspect_data.ipynb notebook for more details.
     """
+    print(mask)
     mini_mask = np.zeros(mini_shape + (mask.shape[-1],), dtype=bool)
     for i in range(mask.shape[-1]):
         m = mask[:, :, i]
         y1, x1, y2, x2 = bbox[i][:4]
         m = m[y1:y2, x1:x2]
-        m = numpy.array(Image.fromarray(m).resize())
         mini_mask[:, :, i] = np.where(m >= 128, 1, 0)
     return mini_mask
 
