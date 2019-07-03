@@ -16,7 +16,7 @@ import tensorflow as tf
 import skimage.color
 import imageio
 import skimage.transform
-import scipy
+import scipy.ndimage
 
 ############################################################
 #  Bounding Boxes
