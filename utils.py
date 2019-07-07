@@ -431,7 +431,7 @@ def minimize_mask(bbox, mask, mini_shape):
     mini_mask = np.zeros(mini_shape + (mask.shape[-1],), dtype=bool)
     for i in range(mask.shape[-1]):
         m = mask[:, :, i]
-        y1, x1, y2, x2 = bbox[i][:4]
+        x1, y1, x2, y2 = bbox[i][:4] #CHANGED
         m = m[y1:y2, x1:x2]
         m = np.array(Image.fromarray(m.astype(float)).resize(
             mini_shape, resample=Image.BILINEAR))
