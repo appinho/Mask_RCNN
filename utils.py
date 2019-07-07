@@ -14,8 +14,8 @@ import random
 import numpy as np
 import tensorflow as tf
 import skimage.color
+import skimage.transform
 import imageio
-from PIL import Image
 import scipy.ndimage
 
 ############################################################
@@ -391,8 +391,8 @@ def resize_image(image, min_dim=None, max_dim=None, padding=False):
             scale = max_dim / image_max
     # Resize image and mask
     if scale != 1:
-        image = np.array(Image.fromarray(image).resize(
-            (round(h * scale), round(w * scale)), resample=Image.BILINEAR))
+        image = skimage.transform.imresize(
+            image, (round(h * scale), round(w * scale)))
     # Need padding?
     if padding:
         # Get new height and width
@@ -431,10 +431,9 @@ def minimize_mask(bbox, mask, mini_shape):
     mini_mask = np.zeros(mini_shape + (mask.shape[-1],), dtype=bool)
     for i in range(mask.shape[-1]):
         m = mask[:, :, i]
-        x1, y1, x2, y2 = bbox[i][:4] #CHANGED
+        y1, x1, y2, x2 = bbox[i][:4]
         m = m[y1:y2, x1:x2]
-        m = np.array(Image.fromarray(m.astype(float)).resize(
-            mini_shape, resample=Image.BILINEAR))
+        m = skimage.transform.imresize(m.astype(float), mini_shape, interp='bilinear')
         mini_mask[:, :, i] = np.where(m >= 128, 1, 0)
     return mini_mask
 
@@ -451,8 +450,7 @@ def expand_mask(bbox, mini_mask, image_shape):
         y1, x1, y2, x2 = bbox[i][:4]
         h = y2 - y1
         w = x2 - x1
-        m = np.array(Image.fromarray(m.astype(float)).resize(
-            (h, w), resample=Image.BILINEAR))
+        m = skimage.transform.imresize(m.astype(float), (h, w), interp='bilinear')
         mask[y1:y2, x1:x2, i] = np.where(m >= 128, 1, 0)
     return mask
 
@@ -472,8 +470,8 @@ def unmold_mask(mask, bbox, image_shape):
     """
     threshold = 0.5
     y1, x1, y2, x2 = bbox
-    mask = np.array(Image.fromarray(mask).resize(
-            (y2 - y1, x2 - x1), resample=Image.BILINEAR)).astype(np.float32) / 255.0
+    mask = skimage.transform.imresize(
+        mask, (y2 - y1, x2 - x1), interp='bilinear').astype(np.float32) / 255.0
     mask = np.where(mask >= threshold, 1, 0).astype(np.uint8)
 
     # Put the mask in the right location.
