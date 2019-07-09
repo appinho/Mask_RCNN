@@ -1125,17 +1125,21 @@ def load_image_gt(dataset, config, image_id, augment=False,
         max_dim=config.IMAGE_MAX_DIM,
         padding=config.IMAGE_PADDING)
     mask = utils.resize_mask(mask, scale, padding)
-
+    print(mask)
+    print(augment)
     # Random horizontal flips.
     if augment:
         if random.randint(0, 1):
+            print("FLIP")
+            print(image.shape, mask.shape)
             image = np.fliplr(image)
             mask = np.fliplr(mask)
+            print(image.shape, mask.shape)
 
     # Bounding boxes. Note that some boxes might be all zeros
     # if the corresponding mask got cropped out.
     # bbox: [num_instances, (y1, x1, y2, x2)]
-    print(mask.shape)
+    print("M", mask.shape)
     bbox = utils.extract_bboxes(mask)
     print("BB", bbox)
 
