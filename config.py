@@ -84,10 +84,10 @@ class Config(object):
     # Images are resized such that the smallest side is >= IMAGE_MIN_DIM and
     # the longest side is <= IMAGE_MAX_DIM. In case both conditions can't
     # be satisfied together the IMAGE_MAX_DIM is enforced.
-    IMAGE_MIN_DIM = 200
-    IMAGE_MAX_DIM = 1524
+    IMAGE_MIN_DIM = False #800
+    IMAGE_MAX_DIM = False #1024
     # If True, pad images with zeros such that they're (max_dim by max_dim)
-    IMAGE_PADDING = True  # currently, the False option is not supported
+    IMAGE_PADDING = False #True  # currently, the False option is not supported
 
     # Image mean (RGB)
     MEAN_PIXEL = np.array([123.7, 116.8, 103.9])
