@@ -1119,6 +1119,7 @@ def load_image_gt(dataset, config, image_id, augment=False,
     image = dataset.load_image(image_id)
     mask, class_ids = dataset.load_mask(image_id)
     shape = image.shape
+    print("C", config.IMAGE_MIN_DIM, config.IMAGE_MAX_DIM)
     image, window, scale, padding = utils.resize_image(
         image, 
         min_dim=config.IMAGE_MIN_DIM, 
@@ -2110,6 +2111,7 @@ class MaskRCNN():
         for image in images:
             # Resize image to fit the model expected size
             # TODO: move resizing to mold_image()
+            print("S", self.config.IMAGE_MIN_DIM, elf.config.IMAGE_MAX_DIM)
             molded_image, window, scale, padding = utils.resize_image(
                 image,
                 min_dim=self.config.IMAGE_MIN_DIM,
