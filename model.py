@@ -1135,21 +1135,28 @@ def load_image_gt(dataset, config, image_id, augment=False,
     # Bounding boxes. Note that some boxes might be all zeros
     # if the corresponding mask got cropped out.
     # bbox: [num_instances, (y1, x1, y2, x2)]
+    print(mask.shape)
     bbox = utils.extract_bboxes(mask)
+    print("BB", bbox)
 
     # Add class_id as the last value in bbox
     bbox = np.hstack([bbox, class_ids[:, np.newaxis]])
-
+    print("BB", bbox)
     # Active classes
     # Different datasets have different classes, so track the
     # classes supported in the dataset of this image.
+    print("NC", dataset.num_classes)
     active_class_ids = np.zeros([dataset.num_classes], dtype=np.int32)
     class_ids = dataset.source_class_ids[dataset.image_info[image_id]["source"]]
+    print("CI", class_ids)
     active_class_ids[class_ids] = 1
 
     # Resize masks to smaller size to reduce memory usage
+    print("UMM", use_mini_mask)
     if use_mini_mask:
+        print(mask)
         mask = utils.minimize_mask(bbox, mask, config.MINI_MASK_SHAPE)
+        print(mask)
 
     # Image meta data
     image_meta = compose_image_meta(image_id, shape, window, active_class_ids)
