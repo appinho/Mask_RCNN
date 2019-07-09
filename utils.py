@@ -13,9 +13,10 @@ import math
 import random
 import numpy as np
 import tensorflow as tf
-import scipy.misc
 import skimage.color
-
+import imageio
+from PIL import Image
+import scipy.ndimage
 
 ############################################################
 #  Bounding Boxes
@@ -330,7 +331,7 @@ class Dataset(object):
         """Load the specified image and return a [H,W,3] Numpy array.
         """
         # Load image
-        image = scipy.misc.imread(self.image_info[image_id]['path'])
+        image = imageio.imread(self.image_info[image_id]['path'])
         # If grayscale. Convert to RGB for consistency.
         if image.ndim != 3:
             image = skimage.color.gray2rgb(image)
@@ -390,8 +391,8 @@ def resize_image(image, min_dim=None, max_dim=None, padding=False):
             scale = max_dim / image_max
     # Resize image and mask
     if scale != 1:
-        image = scipy.misc.imresize(
-            image, (round(h * scale), round(w * scale)))
+        image = np.array(Image.fromarray(image).resize(
+            (round(h * scale), round(w * scale)), resample=Image.BILINEAR))
     # Need padding?
     if padding:
         # Get new height and width
@@ -432,7 +433,8 @@ def minimize_mask(bbox, mask, mini_shape):
         m = mask[:, :, i]
         y1, x1, y2, x2 = bbox[i][:4]
         m = m[y1:y2, x1:x2]
-        m = scipy.misc.imresize(m.astype(float), mini_shape, interp='bilinear')
+        m = np.array(Image.fromarray(m.astype(float)).resize(
+            mini_shape, resample=Image.BILINEAR))
         mini_mask[:, :, i] = np.where(m >= 128, 1, 0)
     return mini_mask
 
@@ -449,7 +451,8 @@ def expand_mask(bbox, mini_mask, image_shape):
         y1, x1, y2, x2 = bbox[i][:4]
         h = y2 - y1
         w = x2 - x1
-        m = scipy.misc.imresize(m.astype(float), (h, w), interp='bilinear')
+        m = np.array(Image.fromarray(m.astype(float)).resize(
+            (h, w), resample=Image.BILINEAR))
         mask[y1:y2, x1:x2, i] = np.where(m >= 128, 1, 0)
     return mask
 
@@ -469,8 +472,8 @@ def unmold_mask(mask, bbox, image_shape):
     """
     threshold = 0.5
     y1, x1, y2, x2 = bbox
-    mask = scipy.misc.imresize(
-        mask, (y2 - y1, x2 - x1), interp='bilinear').astype(np.float32) / 255.0
+    mask = np.array(Image.fromarray(mask).resize(
+            (y2 - y1, x2 - x1), resample=Image.BILINEAR)).astype(np.float32) / 255.0
     mask = np.where(mask >= threshold, 1, 0).astype(np.uint8)
 
     # Put the mask in the right location.
