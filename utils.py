@@ -379,20 +379,23 @@ def resize_image(image, min_dim=None, max_dim=None, padding=False):
     h, w = image.shape[:2]
     window = (0, 0, h, w)
     scale = 1
-
+    print(min_dim, max_dim, h, w)
     # Scale?
     if min_dim:
         # Scale up but not down
         scale = max(1, min_dim / min(h, w))
+    print(scale)
     # Does it exceed max dim?
     if max_dim:
         image_max = max(h, w)
         if round(image_max * scale) > max_dim:
             scale = max_dim / image_max
+    print(scale)
     # Resize image and mask
     if scale != 1:
         image = np.array(Image.fromarray(image).resize(
             (round(h * scale), round(w * scale)), resample=Image.BILINEAR))
+        print(image.shape)
     # Need padding?
     if padding:
         # Get new height and width
