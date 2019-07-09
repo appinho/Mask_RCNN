@@ -436,6 +436,7 @@ def minimize_mask(bbox, mask, mini_shape):
         m = np.array(Image.fromarray(m.astype(float)).resize(
             mini_shape, resample=Image.BILINEAR))
         mini_mask[:, :, i] = np.where(m >= 128, 1, 0)
+        print(i, mini_mask.shape)
     return mini_mask
 
 
