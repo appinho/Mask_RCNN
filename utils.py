@@ -385,18 +385,18 @@ def resize_image(image, min_dim=None, max_dim=None, padding=False):
     if min_dim:
         # Scale up but not down
         scale = max(1, min_dim / min(h, w))
-    print(scale)
+    print("S1", scale)
     # Does it exceed max dim?
     if max_dim:
         image_max = max(h, w)
         if round(image_max * scale) > max_dim:
             scale = max_dim / image_max
-    print(scale)
+    print("S2", scale)
     # Resize image and mask
     if scale != 1:
         image = cv2.resize(image,(round(w * scale), round(h * scale)),
             interpolation = cv2.INTER_CUBIC)
-        print(image.shape)
+    print("After scaling", image.shape)
     # Need padding?
     if padding:
         # Get new height and width
@@ -408,6 +408,7 @@ def resize_image(image, min_dim=None, max_dim=None, padding=False):
         padding = [(top_pad, bottom_pad), (left_pad, right_pad), (0, 0)]
         image = np.pad(image, padding, mode='constant', constant_values=0)
         window = (top_pad, left_pad, h + top_pad, w + left_pad)
+    print("After padding", image.shape, scale)
     return image, window, scale, padding
 
 
