@@ -1134,6 +1134,7 @@ def load_image_gt(dataset, config, image_id, augment=False,
         if random.randint(0, 1):
             image = np.fliplr(image)
             mask = np.fliplr(mask)
+    print("After augmenting", mask.shape)
 
     # Bounding boxes. Note that some boxes might be all zeros
     # if the corresponding mask got cropped out.
@@ -1151,9 +1152,9 @@ def load_image_gt(dataset, config, image_id, augment=False,
 
     # Resize masks to smaller size to reduce memory usage
     if use_mini_mask:
-        print(mask)
+        print("Use mini mask", mask.shape)
         mask = utils.minimize_mask(bbox, mask, config.MINI_MASK_SHAPE)
-        print(mask)
+        print(mask.shape)
 
     # Image meta data
     image_meta = compose_image_meta(image_id, shape, window, active_class_ids)
