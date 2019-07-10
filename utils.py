@@ -394,8 +394,7 @@ def resize_image(image, min_dim=None, max_dim=None, padding=False):
     print("S2", scale)
     # Resize image and mask
     if scale != 1:
-        image = cv2.resize(image,(round(w * scale), round(h * scale)),
-            interpolation = cv2.INTER_CUBIC)
+        image = cv2.resize(image,(round(w * scale), round(h * scale)))
     print("After scaling", image.shape)
     # Need padding?
     if padding:
@@ -442,9 +441,10 @@ def minimize_mask(bbox, mask, mini_shape):
         m = mask[:, :, i]
         y1, x1, y2, x2 = bbox[i][:4]
         m = m[y1:y2, x1:x2]
-        print(i, m.shape)
-        m = np.array(Image.fromarray(m.astype(float)).resize(
-            mini_shape, resample=Image.BILINEAR))
+        switched_mini_shape = (mini_shape[1], mini_shape[0])
+        print("Mini shape", mini_shape, switched_mini_shape)
+        m = cv2.resize(m.astype(float), switched_mini_shape,
+            interpolation = cv2.INTER_LINEAR)
         mini_mask[:, :, i] = np.where(m >= 128, 1, 0)
     return mini_mask
 
@@ -461,8 +461,7 @@ def expand_mask(bbox, mini_mask, image_shape):
         y1, x1, y2, x2 = bbox[i][:4]
         h = y2 - y1
         w = x2 - x1
-        m = np.array(Image.fromarray(m.astype(float)).resize(
-            (h, w), resample=Image.BILINEAR))
+        m = cv2.resize(m.astype(float), (w, h), interpolation = cv2.INTER_LINEAR)
         mask[y1:y2, x1:x2, i] = np.where(m >= 128, 1, 0)
     return mask
 
@@ -482,8 +481,8 @@ def unmold_mask(mask, bbox, image_shape):
     """
     threshold = 0.5
     y1, x1, y2, x2 = bbox
-    mask = np.array(Image.fromarray(mask).resize(
-            (y2 - y1, x2 - x1), resample=Image.BILINEAR)).astype(np.float32) / 255.0
+    mask = cv2.resize(mask, (x2 - x1, y2 - y1), 
+        interpolation = cv2.INTER_LINEAR).astype(np.float32) / 255.0
     mask = np.where(mask >= threshold, 1, 0).astype(np.uint8)
 
     # Put the mask in the right location.
