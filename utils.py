@@ -394,8 +394,8 @@ def resize_image(image, min_dim=None, max_dim=None, padding=False):
     print(scale)
     # Resize image and mask
     if scale != 1:
-        image = cv.resize(image,(round(w * scale), round(h * scale)),
-            interpolation = cv.INTER_CUBIC)
+        image = cv2.resize(image,(round(w * scale), round(h * scale)),
+            interpolation = cv2.INTER_CUBIC)
         print(image.shape)
     # Need padding?
     if padding:
