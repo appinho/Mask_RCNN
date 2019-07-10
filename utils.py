@@ -17,6 +17,7 @@ import skimage.color
 import imageio
 from PIL import Image
 import scipy.ndimage
+import cv2
 
 ############################################################
 #  Bounding Boxes
@@ -391,11 +392,10 @@ def resize_image(image, min_dim=None, max_dim=None, padding=False):
         if round(image_max * scale) > max_dim:
             scale = max_dim / image_max
     print(scale)
-    scale = 1
     # Resize image and mask
     if scale != 1:
-        image = np.array(Image.fromarray(image).resize(
-            (round(h * scale), round(w * scale)), resample=Image.BILINEAR))
+        image = cv2.resize(image, (round(h * scale), round(w * scale)),
+                           interpolation=cv2.INTER_LINEAR))
         print(image.shape)
     # Need padding?
     if padding:
