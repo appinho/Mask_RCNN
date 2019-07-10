@@ -391,6 +391,7 @@ def resize_image(image, min_dim=None, max_dim=None, padding=False):
         if round(image_max * scale) > max_dim:
             scale = max_dim / image_max
     print(scale)
+    scale = 1
     # Resize image and mask
     if scale != 1:
         image = np.array(Image.fromarray(image).resize(
