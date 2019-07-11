@@ -438,8 +438,10 @@ def minimize_mask(bbox, mask, mini_shape):
     mini_mask = np.zeros(mini_shape + (mask.shape[-1],), dtype=bool)
     print(mini_mask.shape)
     for i in range(mask.shape[-1]):
+        print("i", i)
         m = mask[:, :, i]
         y1, x1, y2, x2 = bbox[i][:4]
+        print("Box", y1, x1, y2, x2)
         m = m[y1:y2, x1:x2]
         print("Mini mask", m.shape)
         m = cv2.resize(m.astype(float), mini_shape,
