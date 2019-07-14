@@ -1119,22 +1119,23 @@ def load_image_gt(dataset, config, image_id, augment=False,
     image = dataset.load_image(image_id)
     mask, class_ids = dataset.load_mask(image_id)
     shape = image.shape
-    print("C", config.IMAGE_MIN_DIM, config.IMAGE_MAX_DIM)
+    #print("C", config.IMAGE_MIN_DIM, config.IMAGE_MAX_DIM)
     image, window, scale, padding = utils.resize_image(
         image, 
         min_dim=config.IMAGE_MIN_DIM, 
         max_dim=config.IMAGE_MAX_DIM,
         padding=config.IMAGE_PADDING)
-    print("After resize image", image.shape, window, scale, padding)
-    print("Before resize mask", mask.shape, padding)
+    #print("After resize image", image.shape, window, scale, padding)
+    #print("Before resize mask", mask.shape, padding)
     mask = utils.resize_mask(mask, scale, padding)
-    print("After resize mask", mask.shape)
+    
+    #print("After resize mask", mask.shape)
     # Random horizontal flips.
     if augment:
         if random.randint(0, 1):
             image = np.fliplr(image)
             mask = np.fliplr(mask)
-    print("After augmenting", mask.shape)
+    #print("After augmenting", mask.shape)
 
     # Bounding boxes. Note that some boxes might be all zeros
     # if the corresponding mask got cropped out.
@@ -1143,6 +1144,7 @@ def load_image_gt(dataset, config, image_id, augment=False,
 
     # Add class_id as the last value in bbox
     bbox = np.hstack([bbox, class_ids[:, np.newaxis]])
+
     # Active classes
     # Different datasets have different classes, so track the
     # classes supported in the dataset of this image.
@@ -1152,9 +1154,9 @@ def load_image_gt(dataset, config, image_id, augment=False,
 
     # Resize masks to smaller size to reduce memory usage
     if use_mini_mask:
-        print("Use mini mask", mask.shape)
+        #print("Use mini mask", mask.shape)
         mask = utils.minimize_mask(bbox, mask, config.MINI_MASK_SHAPE)
-        print(mask.shape)
+        #print(mask.shape)
 
     # Image meta data
     image_meta = compose_image_meta(image_id, shape, window, active_class_ids)
@@ -2115,7 +2117,7 @@ class MaskRCNN():
         for image in images:
             # Resize image to fit the model expected size
             # TODO: move resizing to mold_image()
-            print("S", self.config.IMAGE_MIN_DIM, elf.config.IMAGE_MAX_DIM)
+            #print("S", self.config.IMAGE_MIN_DIM, elf.config.IMAGE_MAX_DIM)
             molded_image, window, scale, padding = utils.resize_image(
                 image,
                 min_dim=self.config.IMAGE_MIN_DIM,
