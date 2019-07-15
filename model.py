@@ -1374,8 +1374,7 @@ def build_rpn_targets(image_shape, anchors, gt_boxes, config):
     ix = 0  # index into rpn_bbox
     # TODO: use box_refinment() rather that duplicating the code here
     for i, a in zip(ids, anchors[ids]):
-        print("a", a)
-        print("gt", gt)
+        
         # Closest gt box (it might have IoU < 0.7)
         gt = gt_boxes[anchor_iou_argmax[i], :4]
 
