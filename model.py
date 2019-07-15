@@ -1128,7 +1128,7 @@ def load_image_gt(dataset, config, image_id, augment=False,
     #print("After resize image", image.shape, window, scale, padding)
     #print("Before resize mask", mask.shape, padding)
     mask = utils.resize_mask(mask, scale, padding)
-    
+
     #print("After resize mask", mask.shape)
     # Random horizontal flips.
     if augment:
@@ -1374,6 +1374,8 @@ def build_rpn_targets(image_shape, anchors, gt_boxes, config):
     ix = 0  # index into rpn_bbox
     # TODO: use box_refinment() rather that duplicating the code here
     for i, a in zip(ids, anchors[ids]):
+        print("a", a)
+        print("gt", gt)
         # Closest gt box (it might have IoU < 0.7)
         gt = gt_boxes[anchor_iou_argmax[i], :4]
 
@@ -1388,6 +1390,9 @@ def build_rpn_targets(image_shape, anchors, gt_boxes, config):
         a_w = a[3] - a[1]
         a_center_y = a[0] + 0.5 * a_h
         a_center_x = a[1] + 0.5 * a_w
+
+        a_h = max(1e-9, a_h)
+        a_w = max(1e-9, a_w)
 
         # Compute the bbox refinement that the RPN should predict.
         rpn_bbox[ix] = [
